@@ -1,0 +1,102 @@
+<html>
+<!-- ... -->
+
+<body>
+    <!-- Inséré automatiquement -->
+    <div id="toc"></div>
+    <h4>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</h4>
+    <ol>
+        <li>
+            Titre 1
+            <ol>
+                <li>Titre 1.A</li>
+                <li>
+                    Titre 1.B
+                    <ol>
+                        <li>Titre 1.B.i</li>
+                        <li>Titre 1.B.ii</li>
+                        <li>Titre 1.B.iii</li>
+                    </ol>
+                </li>
+                <li>Titre 1.C</li>
+            </ol>
+        </li>
+    </ol>
+
+    <!-- Contenu initial du document -->
+    <h1>Titre 1</h1>
+    <h2>Titre 1.A</h2>
+    <h2>Titre 1.B</h2>
+    <h3>Titre 1.B.i</h3>
+    <h3>Titre 1.B.ii</h3>
+    <h3>Titre 1.B.iii</h3>
+    <h2>Titre 1.C</h2>
+</body>
+<script>
+    var body = document.getElementsByTagName("BODY")[0].innerHTML;
+
+    var i1 = -1,
+        i2 = 0,
+        i3 = 0;
+    var tab = new Array();
+
+    var reg = new RegExp("<h(\\d)>(.*?)</h\\d>", "gi");
+    var match = null;
+
+    while ((match = reg.exec(body))) {
+        var level = parseInt(match[1]);
+        var text = match[2];
+        console.log(match);
+
+        switch (level) {
+            case 1:
+                tab[++i1] = new Object();
+                tab[i1].text = text;
+                tab[i1].child = new Array();
+                i2 = -1;
+                i3 = -1;
+                break;
+
+            case 2:
+                tab[i1].child[++i2] = new Object();
+                tab[i1].child[i2].text = text;
+                tab[i1].child[i2].child = new Array();
+                i3 = -1;
+                break;
+
+            case 3:
+                tab[i1].child[i2].child[++i3] = new Object();
+                tab[i1].child[i2].child[i3].text = text;
+                break;
+        }
+    }
+
+
+    var html = "<ul>";
+    for (var i = 0; i < tab.length; i++) {
+        html += "<li>" + (i + 1) + ". " + tab[i].text + "";
+        if (tab[i].child.length > 0) {
+            html += "<ul>";
+            for (var j = 0; j < tab[i].child.length; j++) {
+                html += "<li>" + (i + 1) + "." + (j + 1) + ". " + tab[i].child[j].text + "";
+                if (tab[i].child[j].child.length > 0) {
+                    html += "<ul>";
+                    for (var k = 0; k < tab[i].child[j].child.length; k++) {
+                        html += "<li>" + (i + 1) + "." + (j + 1) + "." + (k + 1) + ". " + tab[i].child[j].child[k].text + "</li>";
+                    }
+                    html += "</ul>";
+                }
+                html += "</li>";
+            }
+            html += "</ul>";
+        }
+        html += "</li>";
+    }
+    html += "</ul>";
+
+    console.log(html);
+
+    document.getElementById('toc').innerHTML = html;
+</script>
+
+</html>
